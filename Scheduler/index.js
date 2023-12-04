@@ -6,6 +6,8 @@ class Process{
         this.name = name;
         this.execution_time = execution_time;
         this.arrival_time = arrival_time;
+        this.waitingTime = 0;
+        this.turnaroundTime = 0;
     }
 }
 function createProcessButton(event)
@@ -46,4 +48,35 @@ function displayList(event)
         arrivalSell.innerHTML = process.arrival_time;
     }
     tableBlock.style.display = '';
+}
+
+function generateScheduleSPN()
+{
+    processes.sort((a, b) => a.execution_time - b.execution_time);
+    let currentTime = 0;
+
+    for (const process of processes) {
+        process.waitingTime = Math.max(0, currentTime - process.arrival_time);
+        process.turnaroundTime = process.waitingTime + process.execution_time;
+        currentTime += process.execution_time;
+    }
+
+    displayList(event);
+}
+
+function statistic(event)
+{
+    event.preventDefault();
+    const waitingTimes = processes.map(process => process.waitingTime);
+    const turnaroundTimes = processes.map(process => process.turnaroundTime);
+
+    const averageWaitingTime = waitingTimes.reduce((acc, val) => acc + val, 0) / waitingTimes.length;
+    const meanTurnaroundTime = turnaroundTimes.reduce((acc, val) => acc + val, 0) / turnaroundTimes.length;
+    displayStatistic(averageWaitingTime, meanTurnaroundTime)
+}
+
+function exit(event)
+{
+    event.preventDefault();
+    location.reload();
 }
