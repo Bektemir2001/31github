@@ -11,21 +11,39 @@ class Process{
 function createProcessButton(event)
 {
     event.preventDefault();
-    console.log('gfjngdlkg')
     document.getElementById('modalButtonID').click();
 }
 
 function createProcess(event)
 {
     event.preventDefault();
-    let name = document.getElementById('name').value;
-    let execution_time = document.getElementById('execution_time').value;
-    let arrival_time = document.getElementById('arrival_time').value;
+    let name = document.getElementById('name');
+    let execution_time = document.getElementById('execution_time');
+    let arrival_time = document.getElementById('arrival_time');
     document.getElementById('closeModalId').click();
-    processes.push(new Process(name, execution_time, arrival_time))
+    processes.push(new Process(name.value, execution_time.value, arrival_time.value))
+    name.value = '';
+    execution_time.value = '';
+    arrival_time.value = '';
+    displayList(event);
 }
 
-function displayList()
+function displayList(event)
 {
-    
+    event.preventDefault();
+    let tableBlock = document.getElementById('tableBlockId');
+    let table = document.getElementById('tableId');
+    table.innerHTML = '';
+    for(let i = 0; i < processes.length; i++)
+    {
+        let process = processes[i];
+        let row = table.insertRow();
+        let nameSell = row.insertCell();
+        nameSell.innerHTML = process.name;
+        let executionSell = row.insertCell();
+        executionSell.innerHTML = process.execution_time;
+        let arrivalSell = row.insertCell();
+        arrivalSell.innerHTML = process.arrival_time;
+    }
+    tableBlock.style.display = '';
 }
