@@ -5,27 +5,39 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <input id="message_id">
+  <button onclick="sendQuesry()">send</button>
+  <div id="responseId"></div>
   <script>
-    window.onload = () => {
-        if ('WebSocket' in window) {
-            // create websocket connection
-            let ws = new WebSocket('ws://127.0.0.1:3001/websocket');
-            // push a message when the connection is successful, then the server can start pushing data
-            ws.onopen = () => {
-                console.log('websocket success---');
-                ws.send('success');
-            }
-            ws.onmessage = (message) => {
-                let data = message.data;
-                console.log('get websocket message---', data);
-            }
-            ws.onerror = () => {
-                console.error('websocket fail');
-            }
-        } else {
-            console.error('dont support websocket');
-        };
-    };
+  function sendQuesry()
+{
+	
+	document.getElementById('responseId').innerHTML = '';
+	let message = document.getElementById('message_id').value;
+	console.log(message)
+	    if ('WebSocket' in window) {
+		// create websocket connection
+		let ws = new WebSocket('ws://80.72.180.130:3001/websocket');
+		// push a message when the connection is successful, then the server can start pushing data
+		ws.onopen = () => {
+		    console.log('websocket success---');
+		    // Отправка сообщения на сервер
+		    ws.send(message);
+		}
+		ws.onmessage = (message) => {
+		    let data = message.data;
+		    let div = document.getElementById('responseId');
+		    div.innerHTML += data
+		}
+		ws.onerror = () => {
+		    console.error('websocket fail');
+		}
+	    } else {
+		console.error('dont support websocket');
+	    };
+}
+    
+
 </script>
 
 </head>

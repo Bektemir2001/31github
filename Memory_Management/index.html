@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Management - Next Fit</title>
+  <style>
+    #memory {
+      width: 500px;
+      height: auto;
+      border: 1px solid #000;
+      position: relative;
+    }
+
+    .block {
+      display: inline-block;
+      border: 1px solid #777;
+      padding: 5px;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Memory Management - Next Fit</h1>
+
+  <button onclick="createProcess()">Create Process</button>
+  <button onclick="stopProcess()">Stop Process</button>
+  <button onclick="viewMemoryState()">View Memory State</button>
+  <button onclick="exit()">Exit</button>
+
+  <div id="memory"></div>
+
+  <script>
+    let memory = [];
+    let nextFitPointer = 0;
+
+
+    function createProcess() {
+      const processName = prompt("Enter process name:");
+      const requiredSize = parseInt(prompt("Enter required size:"));
+
+      // Simulate Next Fit allocation
+      let allocated = false;
+      let i = nextFitPointer
+      for (; i < memory.length; i++) {
+        if (memory[i].name === 'Free' || memory[i].size >= requiredSize) {
+          memory[i] = {name: processName, size: requiredSize, free_size: memory[i].free_size - requiredSize};
+          nextFitPointer = i + 1;
+          allocated = true;
+          break;
+        }
+      }
+
+      if (!allocated) {
+        memory.push({name: processName, size: requiredSize, free_size: 0});
+        nextFitPointer = i;
+      }
+
+      viewMemoryState();
+    }
+    function stopProcess() {
+      const processName = prompt("Enter process name to stop:");
+      let i = 0
+      for (; i < memory.length; i++) {
+        if (memory[i].name === processName) {
+          memory[i].name = 'Free';
+          memory[i].free_size = memory[i].size;
+          memory[i].size = 0;
+          break;
+        }
+      }
+      nextFitPointer = i;
+
+      viewMemoryState();
+    }
+    function viewMemoryState() {
+      const memoryDiv = document.getElementById("memory");
+      memoryDiv.innerHTML = "";
+
+      for (let i = 0; i < memory.length; i++) {
+        const blockSize = memory[i].size;
+        const name = memory[i].name;
+        const free_size = memory[i].free_size
+        const blockDiv = document.createElement("div");
+        const information = name === 'Free' ? `Block ${i + 1}: Free, size: ${blockSize}, free size: ${free_size}` : `Block ${i + 1}: name: ${name}, size: ${blockSize}, free size: ${free_size}`;
+        blockDiv.className = "block";
+        blockDiv.textContent = information;
+        memoryDiv.appendChild(blockDiv);
+        console.log(blockDiv)
+      }
+
+    }
+
+    function exit() {
+      alert("Exiting...");
+      location.reload();
+    }
+  </script>
+</body>
+</html>
